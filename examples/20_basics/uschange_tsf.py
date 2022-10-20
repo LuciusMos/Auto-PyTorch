@@ -12,6 +12,7 @@ import tempfile as tmp
 import warnings
 import copy
 import numpy as np
+import sys
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
@@ -26,10 +27,14 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 from sktime.datasets import load_uschange
 targets, features = load_uschange()
 
-exp_index = 12
+exp_index = 'test'
 temporary_directory = './uschange/uschange_tmp_{}'.format(exp_index)
 output_directory = './uschange/uschange_out_{}'.format(exp_index)
 forecasting_horizon = 10
+
+func_eval_time_limit_secs = int(sys.argv[1]) * 60
+total_walltime_limit = int(sys.argv[2]) * 60
+print('args -- func_eval_time_limit_secs:{}, total_walltime_limit:{}'.format(func_eval_time_limit_secs, total_walltime_limit))
 
 # Dataset optimized by APT-TS can be a list of np.ndarray / pd.DataFrame where each series represents an element in the
 # list, or a single pd.DataFrame that records the series
@@ -76,8 +81,8 @@ api.search(
     memory_limit=16 * 1024,  # Currently, forecasting models use much more memories
     # freq=freq,
     # start_times=start_times,
-    func_eval_time_limit_secs=10 * 1,
-    total_walltime_limit=60 * 1,
+    func_eval_time_limit_secs=func_eval_time_limit_secs,
+    total_walltime_limit=total_walltime_limit,
     min_num_test_instances=1000,  # proxy validation sets. This only works for the tasks with more than 1000 series
     known_future_features=known_future_features,
 )
