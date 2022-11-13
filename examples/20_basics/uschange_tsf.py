@@ -119,38 +119,36 @@ for feature, future_feature, target in zip(X_train, X_test, y_train):
 # generate a test set:
 # test_sets2 = api.dataset.generate_test_seqs()
 
+################################################################################
+# Print useful information
+# (use try-except in case some are not functional for Time Series task)
+# ======================================================================
 try:
     y_pred = api.predict(test_sets)
     np.savetxt(exp_config.output_directory + "/y_pred.txt", y_pred, delimiter=',')
     print('== y_pred saved in {}'.format(exp_config.output_directory + "/y_pred.txt"))
 except Exception as e:
     print('====== api.predict() fails ======')
-
 try:
     print('== models:', api.show_models())
 except Exception as e:
     print('show_models: {}'.format(e))
-
 try:
     print('== stat  :', api.sprint_statistics())
 except Exception as e:
     print('sprint_statistics: {}'.format(e))
-
 try:
     print('== socre :', api.score(y_pred, y_test))  # , sp=freq, n_prediction_steps=exp_config.forecasting_horizon))
 except Exception as e:
     print('score: {}'.format(e))
-
 try:
     print('== models:', api.dataset)
 except Exception as e:
     print('get_pytorch_model: {}'.format(e))
 
-
-# You can use the following sentence to load prediction result
-# y_pred = np.loadtxt(exp_config.output_directory + "/y_pred.txt", delimiter=',')
-
-
+############################################################################
+# Visualize best models with torchviz in `tmp_path/best_models`
+# ================================================================
 paths = os.listdir(exp_config.temporary_directory)
 # dir_list element: (tmp_name, abs_path)
 dir_list = []
@@ -164,7 +162,7 @@ pathlib.Path(os.path.join(exp_config.temporary_directory, 'best_models')).mkdir(
 for tmp_name, abs_path in dir_list:
     best_model = torch.load(os.path.join(abs_path, 'best.pth'), map_location='cpu')
     best_model.device = 'cpu'
-    # Prepare input data for torchviz's backward prop
+    # Prepare input data for torchviz's backward propagation
     past_targets_shape = y_train[0].shape
     if len(past_targets_shape) == 1:
         past_targets_shape += (1, )
@@ -179,3 +177,9 @@ for tmp_name, abs_path in dir_list:
     # Draw with torchviz
     g = make_dot(best_model_output[0])
     g.render(filename=os.path.join(exp_config.temporary_directory, 'best_models/{}'.format(tmp_name)), format='png')
+
+
+############################################################################
+# Hint: Load prediction result
+# =====================================================
+# y_pred = np.loadtxt(exp_config.output_directory + "/y_pred.txt", delimiter=',')
