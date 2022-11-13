@@ -1,10 +1,10 @@
 {
-    "device": "cpu",
+    "device": "cuda",
     "budget_type": "epochs",
     "epochs": 50,
     "runtime": 3600,
-    "torch_num_threads": 1,
+    "torch_num_threads": 2,
     "early_stopping": 20,
-    "use_tensorboard_logger": "False",
+    "use_tensorboard_logger": "True",
     "metrics_during_training": "True"
 }

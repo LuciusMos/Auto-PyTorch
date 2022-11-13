@@ -464,7 +464,8 @@ class TrainerChoice(autoPyTorchChoice):
         # Save the checkpoint if there is a new best epoch
         best_path = os.path.join(self.checkpoint_dir, 'best.pth')
         if epochs_since_best == 0:
-            torch.save(X['network'].state_dict(), best_path)
+            torch.save(X['network'], best_path)
+            # torch.save(X['network'].state_dict(), best_path)
 
         return epochs_since_best > cast(int, X['early_stopping'])
 

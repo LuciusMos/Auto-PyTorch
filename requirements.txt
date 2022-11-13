@@ -17,3 +17,7 @@ catboost
 lightgbm
 flaky
 tabulate
+
+pathlib
+graphviz
+torchviz
