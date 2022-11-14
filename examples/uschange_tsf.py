@@ -30,7 +30,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 from sktime.datasets import load_uschange
 targets, features = load_uschange()
-# start_times = [targets.index.to_timestamp()[0]]  # not used in longley dataset
+# start_times = [targets.index.to_timestamp()[0]]  # not used in uschange dataset
 freq = '1Q'
 
 exp_index='test_save_model'
@@ -38,8 +38,8 @@ exp_config = EasyDict(
     temporary_directory='./uschange/uschange_tmp_{}'.format(exp_index),
     output_directory='./uschange/uschange_out_{}'.format(exp_index),
     forecasting_horizon=3,
-    func_eval_time_limit_secs=60 * 10,
-    total_walltime_limit=60 * 120,
+    func_eval_time_limit_secs=60 * 5,
+    total_walltime_limit=60 * 60,
 )
 
 # Dataset optimized by APT-TS can be a list of np.ndarray / pd.DataFrame where each series represents an element in the
@@ -142,7 +142,7 @@ try:
 except Exception as e:
     print('score: {}'.format(e))
 try:
-    print('== models:', api.dataset)
+    print('== models:', api.model)
 except Exception as e:
     print('get_pytorch_model: {}'.format(e))
 
